@@ -1,496 +1,451 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welches KI-Modell für welchen Einsatz?</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            overflow: hidden;
-        }
-
-        header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 30px;
-            text-align: center;
-        }
-
-        h1 {
-            font-size: 2rem;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-        }
-
-        .subtitle {
-            font-size: 1.1rem;
-            opacity: 0.95;
-        }
-
-        .info-box {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 15px;
-            padding: 20px;
-            margin: 30px;
-            margin-bottom: 0;
-            text-align: center;
-        }
-
-        .info-box h3 {
-            margin-bottom: 10px;
-            font-size: 1.2rem;
-        }
-
-        .info-box p {
-            line-height: 1.6;
-            opacity: 0.95;
-        }
-
-        .main-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            padding: 30px;
-        }
-
-        @media (max-width: 768px) {
-            .main-content {
-                grid-template-columns: 1fr;
-            }
-            h1 {
-                font-size: 1.5rem;
-            }
-        }
-
-        .scenarios-section {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 25px;
-        }
-
-        .models-section {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 25px;
-        }
-
-        h2 {
-            color: #333;
-            margin-bottom: 20px;
-            font-size: 1.4rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .icon {
-            width: 30px;
-            height: 30px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-        }
-
-        .scenario-card {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 15px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .scenario-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-
-        .scenario-card.selected {
-            border-color: #667eea;
-            background: linear-gradient(to right, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
-        }
-
-        .scenario-title {
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 8px;
-            font-size: 1.1rem;
-        }
-
-        .scenario-description {
-            color: #666;
-            font-size: 0.95rem;
-            line-height: 1.5;
-        }
-
-        .model-item {
-            background: white;
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 12px;
-            transition: all 0.3s ease;
-            opacity: 0.3;
-            transform: scale(0.95);
-            border: 2px solid #e0e0e0;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .model-item.recommended {
-            opacity: 1;
-            transform: scale(1);
-            border-color: #4CAF50;
-            background: linear-gradient(to right, rgba(76, 175, 80, 0.05), rgba(76, 175, 80, 0.1));
-            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2);
-        }
-
-        .model-item.recommended::before {
-            content: '✓ Empfohlen';
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            background: #4CAF50;
-            color: white;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: bold;
-        }
-
-        .model-name {
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 5px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .model-badge {
-            background: #00BCD4;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: bold;
-        }
-
-        .model-description {
-            color: #666;
-            font-size: 0.9rem;
-            line-height: 1.4;
-        }
-
-        .reset-button {
-            background: white;
-            color: #667eea;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 15px;
-        }
-
-        .reset-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        }
-
-        .stats {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255,255,255,0.3);
-        }
-
-        .stat-item {
-            text-align: center;
-        }
-
-        .stat-number {
-            font-size: 2rem;
-            font-weight: bold;
-            display: block;
-        }
-
-        .stat-label {
-            font-size: 0.9rem;
-            opacity: 0.9;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .model-item {
-            animation: fadeIn 0.5s ease;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Interaktive Übung zur Auswahl des passenden KI-Sprachmodells für Unterrichtssettings in AIS.chat. Hessische Lehrkräfteakademie.">
+<title>Welches KI-Modell für welchen Einsatz? &middot; AIS.chat</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  padding: 20px;
+}
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  overflow: hidden;
+}
+header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 30px;
+  text-align: center;
+}
+h1 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+.subtitle {
+  font-size: 1.1rem;
+  opacity: 0.95;
+}
+.info-box {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 15px;
+  padding: 20px;
+  margin: 30px;
+  margin-bottom: 0;
+  text-align: center;
+}
+.info-box h3 {
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+}
+.info-box p {
+  line-height: 1.6;
+  opacity: 0.95;
+}
+.main-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  padding: 30px;
+}
+@media (max-width: 768px) {
+  .main-content {
+    grid-template-columns: 1fr;
+  }
+  h1 {
+    font-size: 1.5rem;
+  }
+}
+.scenarios-section {
+  background: #f8f9fa;
+  border-radius: 15px;
+  padding: 25px;
+}
+.models-section {
+  background: #f8f9fa;
+  border-radius: 15px;
+  padding: 25px;
+}
+h2 {
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.icon {
+  width: 30px;
+  height: 30px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+}
+.scenario-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.scenario-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+.scenario-card.selected {
+  border-color: #667eea;
+  background: linear-gradient(to right, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+}
+.scenario-title {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+  font-size: 1.1rem;
+}
+.scenario-description {
+  color: #666;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+.model-item {
+  background: white;
+  border-radius: 12px;
+  padding: 15px;
+  margin-bottom: 12px;
+  transition: all 0.3s ease;
+  opacity: 0.3;
+  transform: scale(0.95);
+  border: 2px solid #e0e0e0;
+  position: relative;
+  overflow: hidden;
+}
+.model-item.recommended {
+  opacity: 1;
+  transform: scale(1);
+  border-color: #4CAF50;
+  background: linear-gradient(to right, rgba(76, 175, 80, 0.05), rgba(76, 175, 80, 0.1));
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2);
+}
+.model-item.recommended::before {
+  content: '✓ Empfohlen';
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: #4CAF50;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+.model-name {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.model-badge {
+  background: #00BCD4;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+.model-leaf {
+  color: #4CAF50;
+  font-size: 1rem;
+}
+.model-description {
+  color: #666;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+.reset-button {
+  background: white;
+  color: #667eea;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 15px;
+}
+.reset-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+.stats {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255,255,255,0.3);
+}
+.stat-item {
+  text-align: center;
+}
+.stat-number {
+  font-size: 2rem;
+  font-weight: bold;
+  display: block;
+}
+.stat-label {
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+.footer-note {
+  text-align: center;
+  padding: 20px 30px 25px;
+  color: #888;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+.footer-note a {
+  color: #667eea;
+  text-decoration: none;
+}
+.footer-note a:hover {
+  text-decoration: underline;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.model-item {
+  animation: fadeIn 0.5s ease;
+}
+</style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>🤖 Welches KI-Modell für welchen Einsatz?</h1>
-            <p class="subtitle">Finden Sie das passende Sprachmodell für Ihr Unterrichtssetting in telli.</p>
-        </header>
-
-        <div class="info-box">
-            <h3>💡 So funktioniert's</h3>
-            <p>
-                Wählen Sie links ein Unterrichtsszenario aus, und die passenden KI-Modelle werden rechts hervorgehoben. 
-                Jedes Modell hat seine Stärken – nutzen Sie diese Übersicht, um das optimale Modell für Ihre Bedürfnisse zu finden!
-            </p>
-            <button class="reset-button" onclick="resetSelection()">Auswahl zurücksetzen</button>
-            
-            <div class="stats">
-                <div class="stat-item">
-                    <span class="stat-number" id="totalModels">10</span>
-                    <span class="stat-label">Modelle verfügbar</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number" id="recommendedCount">0</span>
-                    <span class="stat-label">Empfohlen</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number" id="scenarioCount">5</span>
-                    <span class="stat-label">Szenarien</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="main-content">
-            <div class="scenarios-section">
-                <h2>
-                    <span class="icon">📚</span>
-                    Wählen Sie Ihr Unterrichtsszenario
-                </h2>
-                
-                <div class="scenario-card" data-scenario="dialog">
-                    <div class="scenario-title">🗣️ Dialog & Kreatives Schreiben</div>
-                    <div class="scenario-description">
-                        Komplexe Unterrichtsszenarien, Dialogpartner, kreative Texte. 
-                        Hier sind Ausdruck, Struktur und Stil wichtig.
-                    </div>
-                </div>
-
-                <div class="scenario-card" data-scenario="kurz">
-                    <div class="scenario-title">⚡ Kurz & Direkt</div>
-                    <div class="scenario-description">
-                        Schnelle Antworten auf Schülerfragen, Definitionen, Vokabelhilfen. 
-                        Kleine, schnell reagierende Modelle genügen.
-                    </div>
-                </div>
-
-                <div class="scenario-card" data-scenario="sparsam">
-                    <div class="scenario-title">💾 Sparsam & Schnell</div>
-                    <div class="scenario-description">
-                        Bei begrenzten Ressourcen oder für kurze Feedbacks. 
-                        Ressourcenschonende, effiziente Modelle sind ideal.
-                    </div>
-                </div>
-
-                <div class="scenario-card" data-scenario="logik">
-                    <div class="scenario-title">🧮 Mathematik & Logik</div>
-                    <div class="scenario-description">
-                        Transparentes, schrittweises Denken für Mathe und Naturwissenschaften. 
-                        Zeigt Denkwege nachvollziehbar.
-                    </div>
-                </div>
-
-                <div class="scenario-card" data-scenario="allround">
-                    <div class="scenario-title">🎯 Allround-Einsatz</div>
-                    <div class="scenario-description">
-                        Vielseitige Aufgaben ohne spezielle Anforderungen. 
-                        Ausgewogene Modelle für den täglichen Einsatz.
-                    </div>
-                </div>
-            </div>
-
-            <div class="models-section">
-                <h2>
-                    <span class="icon">🎯</span>
-                    Verfügbare Modelle in telli
-                </h2>
-                
-                <div id="models-container">
-                    <div class="model-item" data-model="gpt-5-mini">
-                        <div class="model-name">
-                            GPT-5 mini
-                            <span class="model-badge">NEU</span>
-                        </div>
-                        <div class="model-description">Schnelles, effizientes Modell für alltägliche Aufgaben</div>
-                    </div>
-
-                    <div class="model-item" data-model="gpt-4o-mini">
-                        <div class="model-name">GPT-4o-mini</div>
-                        <div class="model-description">Eine verkleinerte Version von GPT-4o</div>
-                    </div>
-
-                    <div class="model-item" data-model="gpt-4o">
-                        <div class="model-name">GPT-4o</div>
-                        <div class="model-description">Ein führendes Modell von OpenAI</div>
-                    </div>
-
-                    <div class="model-item" data-model="llama-405b">
-                        <div class="model-name">Llama-3.1-405B</div>
-                        <div class="model-description">Ein offenes Modell für anspruchsvolle Szenarien</div>
-                    </div>
-
-                    <div class="model-item" data-model="o3-mini">
-                        <div class="model-name">o3-mini</div>
-                        <div class="model-description">Ideal für komplexe Aufgaben in Mathe/Naturwissenschaften</div>
-                    </div>
-
-                    <div class="model-item" data-model="llama-8b">
-                        <div class="model-name">Llama-3.1-8B</div>
-                        <div class="model-description">Effizient für leichtere Aufgaben</div>
-                    </div>
-
-                    <div class="model-item" data-model="llama-70b">
-                        <div class="model-name">Llama-3.3-70B</div>
-                        <div class="model-description">Ein leistungsstarkes, aktuelles Modell von Meta</div>
-                    </div>
-
-                    <div class="model-item" data-model="gpt-5">
-                        <div class="model-name">
-                            GPT-5
-                            <span class="model-badge">NEU</span>
-                        </div>
-                        <div class="model-description">Für komplexe Aufgaben, reasoning</div>
-                    </div>
-
-                    <div class="model-item" data-model="gpt-5-nano">
-                        <div class="model-name">
-                            GPT-5 nano
-                            <span class="model-badge">NEU</span>
-                        </div>
-                        <div class="model-description">Sehr schnell und günstig</div>
-                    </div>
-
-                    <div class="model-item" data-model="mistral-nemo">
-                        <div class="model-name">Mistral Nemo Instruct</div>
-                        <div class="model-description">multilingual, Open Source und effizient</div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="container">
+  <header>
+    <h1>🤖 Welches KI-Modell für welchen Einsatz?</h1>
+    <p class="subtitle">Finden Sie das passende Sprachmodell für Ihr Unterrichtssetting in AIS.chat.</p>
+  </header>
+  <div class="info-box">
+    <h3>💡 So funktioniert's</h3>
+    <p>
+      Wählen Sie links ein Unterrichtsszenario aus, und die passenden KI-Modelle werden rechts hervorgehoben.
+      Jedes Modell hat seine Stärken. Nutzen Sie diese Übersicht, um das geeignete Modell für Ihre Anforderungen zu finden.
+    </p>
+    <button class="reset-button" onclick="resetSelection()">Auswahl zurücksetzen</button>
+    <div class="stats">
+      <div class="stat-item">
+        <span class="stat-number" id="totalModels">10</span>
+        <span class="stat-label">Modelle verfügbar</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number" id="recommendedCount">0</span>
+        <span class="stat-label">Empfohlen</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number" id="scenarioCount">5</span>
+        <span class="stat-label">Szenarien</span>
+      </div>
     </div>
+  </div>
+  <div class="main-content">
+    <div class="scenarios-section">
+      <h2>
+        <span class="icon">📚</span>
+        Wählen Sie Ihr Unterrichtsszenario
+      </h2>
+      <div class="scenario-card" data-scenario="dialog">
+        <div class="scenario-title">🗣️ Dialog &amp; Kreatives Schreiben</div>
+        <div class="scenario-description">
+          Komplexe Unterrichtsszenarien, Dialogpartner, kreative Texte. Hier sind Ausdruck, Struktur und Stil wichtig.
+        </div>
+      </div>
+      <div class="scenario-card" data-scenario="kurz">
+        <div class="scenario-title">⚡ Kurz &amp; Direkt</div>
+        <div class="scenario-description">
+          Schnelle Antworten auf Schülerfragen, Definitionen, Vokabelhilfen. Kleine, schnell reagierende Modelle genügen.
+        </div>
+      </div>
+      <div class="scenario-card" data-scenario="sparsam">
+        <div class="scenario-title">💾 Sparsam &amp; Schnell</div>
+        <div class="scenario-description">
+          Bei begrenzten Ressourcen oder für kurze Feedbacks. Ressourcenschonende, effiziente Modelle sind ideal. Das Blatt-Symbol (🌱) im AIS.chat-UI kennzeichnet besonders sparsame Modelle.
+        </div>
+      </div>
+      <div class="scenario-card" data-scenario="logik">
+        <div class="scenario-title">🧮 Mathematik &amp; Logik</div>
+        <div class="scenario-description">
+          Transparentes, schrittweises Denken für Mathematik und Naturwissenschaften. Zeigt Denkwege nachvollziehbar.
+        </div>
+      </div>
+      <div class="scenario-card" data-scenario="allround">
+        <div class="scenario-title">🎯 Allround-Einsatz</div>
+        <div class="scenario-description">
+          Vielseitige Aufgaben ohne spezielle Anforderungen. Ausgewogene Modelle für den täglichen Einsatz.
+        </div>
+      </div>
+    </div>
+    <div class="models-section">
+      <h2>
+        <span class="icon">🎯</span>
+        Verfügbare Modelle in AIS.chat
+      </h2>
+      <div id="models-container">
+        <div class="model-item" data-model="gpt-5-mini">
+          <div class="model-name">GPT-5 mini</div>
+          <div class="model-description">Schnelles, effizientes Modell für alltägliche Aufgaben</div>
+        </div>
+        <div class="model-item" data-model="gpt-5">
+          <div class="model-name">GPT-5</div>
+          <div class="model-description">Für komplexe Aufgaben, reasoning</div>
+        </div>
+        <div class="model-item" data-model="gpt-5-nano">
+          <div class="model-name">
+            GPT-5 nano
+            <span class="model-leaf" title="Energieeffizientes Modell">🌱</span>
+          </div>
+          <div class="model-description">Sehr schnell und günstig</div>
+        </div>
+        <div class="model-item" data-model="gpt-5-5">
+          <div class="model-name">
+            GPT-5.5
+            <span class="model-badge">NEU</span>
+          </div>
+          <div class="model-description">Teures, leistungsfähiges Modell für komplexe Aufgaben</div>
+        </div>
+        <div class="model-item" data-model="gpt-4o-mini">
+          <div class="model-name">GPT-4o-mini</div>
+          <div class="model-description">Eine verkleinerte Version von GPT-4o</div>
+        </div>
+        <div class="model-item" data-model="o3-mini">
+          <div class="model-name">o3-mini</div>
+          <div class="model-description">Ideal für komplexe Aufgaben in Mathe und Naturwissenschaften</div>
+        </div>
+        <div class="model-item" data-model="llama-8b">
+          <div class="model-name">Llama-3.1-8B</div>
+          <div class="model-description">Effizient für leichtere Aufgaben</div>
+        </div>
+        <div class="model-item" data-model="mistral-nemo">
+          <div class="model-name">Mistral Nemo Instruct</div>
+          <div class="model-description">Multilingual, Open Source und effizient</div>
+        </div>
+        <div class="model-item" data-model="llama-70b">
+          <div class="model-name">Llama-3.3-70B</div>
+          <div class="model-description">Ein leistungsstarkes, aktuelles Modell von Meta</div>
+        </div>
+        <div class="model-item" data-model="gpt-4o">
+          <div class="model-name">GPT-4o</div>
+          <div class="model-description">Ein führendes Modell von OpenAI</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-note">
+    Stand der Modellliste: Mai 2026. Quelle: AIS.chat (<a href="https://app.ais-chat.schule" target="_blank" rel="noopener">app.ais-chat.schule</a>).<br>
+    Erstellt von Martin Kurz, Hessische Lehrkräfteakademie. Lizenz: <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.de" target="_blank" rel="noopener">CC BY-SA 4.0</a>.
+  </div>
+</div>
+<script>
+const recommendations = {
+  dialog:   ['gpt-5-5', 'gpt-5', 'gpt-4o', 'llama-70b'],
+  kurz:     ['gpt-5-mini', 'gpt-4o-mini', 'llama-8b', 'mistral-nemo', 'gpt-5-nano'],
+  sparsam:  ['gpt-5-nano', 'mistral-nemo', 'gpt-5-mini', 'llama-8b'],
+  logik:    ['gpt-5-5', 'gpt-5', 'o3-mini'],
+  allround: ['gpt-4o', 'gpt-5-mini', 'llama-70b', 'mistral-nemo']
+};
 
-    <script>
-        const recommendations = {
-            dialog: ['gpt-4o', 'gpt-5', 'llama-405b', 'llama-70b'],
-            kurz: ['gpt-5-mini', 'gpt-4o-mini', 'llama-8b', 'mistral-nemo', 'gpt-5-nano'],
-            sparsam: ['gpt-5-nano', 'mistral-nemo', 'gpt-5-mini', 'llama-8b'],
-            logik: ['o3-mini', 'gpt-5', 'llama-405b'],
-            allround: ['gpt-4o', 'gpt-5-mini', 'llama-70b', 'mistral-nemo']
-        };
+document.addEventListener('DOMContentLoaded', function() {
+  attachEventListeners();
+  updateStats();
+});
 
-        document.addEventListener('DOMContentLoaded', function() {
-            attachEventListeners();
-            updateStats();
-        });
+function attachEventListeners() {
+  const scenarioCards = document.querySelectorAll('.scenario-card');
+  scenarioCards.forEach(card => {
+    card.addEventListener('click', function() {
+      selectScenario(this);
+    });
+  });
+}
 
-        function attachEventListeners() {
-            const scenarioCards = document.querySelectorAll('.scenario-card');
-            scenarioCards.forEach(card => {
-                card.addEventListener('click', function() {
-                    selectScenario(this);
-                });
-            });
-        }
+function selectScenario(card) {
+  document.querySelectorAll('.scenario-card').forEach(c => {
+    c.classList.remove('selected');
+  });
+  card.classList.add('selected');
+  const scenario = card.dataset.scenario;
+  highlightRecommendedModels(scenario);
+  updateStats();
+  animateModels();
+}
 
-        function selectScenario(card) {
-            document.querySelectorAll('.scenario-card').forEach(c => {
-                c.classList.remove('selected');
-            });
-            
-            card.classList.add('selected');
-            
-            const scenario = card.dataset.scenario;
-            highlightRecommendedModels(scenario);
-            updateStats();
-            animateModels();
-        }
+function highlightRecommendedModels(scenario) {
+  const recommendedModels = recommendations[scenario] || [];
+  document.querySelectorAll('.model-item').forEach(model => {
+    model.classList.remove('recommended');
+  });
+  recommendedModels.forEach(modelId => {
+    const modelElement = document.querySelector(`[data-model="${modelId}"]`);
+    if (modelElement) {
+      modelElement.classList.add('recommended');
+    }
+  });
+}
 
-        function highlightRecommendedModels(scenario) {
-            const recommendedModels = recommendations[scenario] || [];
-            
-            document.querySelectorAll('.model-item').forEach(model => {
-                model.classList.remove('recommended');
-            });
-            
-            recommendedModels.forEach(modelId => {
-                const modelElement = document.querySelector(`[data-model="${modelId}"]`);
-                if (modelElement) {
-                    modelElement.classList.add('recommended');
-                }
-            });
-        }
+function resetSelection() {
+  document.querySelectorAll('.scenario-card').forEach(card => {
+    card.classList.remove('selected');
+  });
+  document.querySelectorAll('.model-item').forEach(model => {
+    model.classList.remove('recommended');
+  });
+  updateStats();
+}
 
-        function resetSelection() {
-            document.querySelectorAll('.scenario-card').forEach(card => {
-                card.classList.remove('selected');
-            });
-            
-            document.querySelectorAll('.model-item').forEach(model => {
-                model.classList.remove('recommended');
-            });
-            
-            updateStats();
-        }
+function updateStats() {
+  const totalModels = document.querySelectorAll('.model-item').length;
+  const recommendedModels = document.querySelectorAll('.model-item.recommended').length;
+  document.getElementById('totalModels').textContent = totalModels;
+  document.getElementById('recommendedCount').textContent = recommendedModels;
+}
 
-        function updateStats() {
-            const totalModels = document.querySelectorAll('.model-item').length;
-            const recommendedModels = document.querySelectorAll('.model-item.recommended').length;
-            
-            document.getElementById('totalModels').textContent = totalModels;
-            document.getElementById('recommendedCount').textContent = recommendedModels;
-        }
-
-        function animateModels() {
-            const models = document.querySelectorAll('.model-item.recommended');
-            models.forEach((model, index) => {
-                model.style.animation = 'none';
-                setTimeout(() => {
-                    model.style.animation = `fadeIn 0.5s ease ${index * 0.1}s`;
-                }, 10);
-            });
-        }
-    </script>
+function animateModels() {
+  const models = document.querySelectorAll('.model-item.recommended');
+  models.forEach((model, index) => {
+    model.style.animation = 'none';
+    setTimeout(() => {
+      model.style.animation = `fadeIn 0.5s ease ${index * 0.1}s`;
+    }, 10);
+  });
+}
+</script>
 </body>
 </html>
